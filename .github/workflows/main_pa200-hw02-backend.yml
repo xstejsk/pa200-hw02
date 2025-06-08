@@ -17,18 +17,21 @@ jobs:
 
       - name: Set up Java version
         uses: actions/setup-java@v4
+        working-directory: "./sports-reservation-system-backend"
         with:
           java-version: '17'
           distribution: 'microsoft'
-
+        
       - name: Build with Maven
-        run: mvn -f sports-reservation-system-backend/pom.xml clean install
+        working-directory: "./sports-reservation-system-backend"
+        run: mvn clean install
 
       - name: Upload artifact for deployment job
+        working-directory: "./sports-reservation-system-backend"
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/sports-reservation-system-backend/target/*.jar'
+          path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
     runs-on: windows-latest
