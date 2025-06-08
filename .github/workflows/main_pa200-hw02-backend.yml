@@ -11,23 +11,23 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read #This is required for actions/checkout
+    defaults:
+      run:
+        working-directory: "sports-reservation-system-backend"
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Java version
         uses: actions/setup-java@v4
-        working-directory: "./sports-reservation-system-backend"
         with:
           java-version: '17'
           distribution: 'microsoft'
         
       - name: Build with Maven
-        working-directory: "./sports-reservation-system-backend"
         run: mvn clean install
 
       - name: Upload artifact for deployment job
-        working-directory: "./sports-reservation-system-backend"
         uses: actions/upload-artifact@v4
         with:
           name: java-app
