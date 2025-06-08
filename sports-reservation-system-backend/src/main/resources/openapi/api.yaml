@@ -1,0 +1,380 @@
+openapi: 3.0.0
+info:
+  title: Reservation system API
+  version: 1.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/RADIMSTEJSKAL/ME2/1.0.0
+  - url: http://localhost:8080/api/v1
+    description: Local machine
+tags:
+  - name: users
+    description: Manage users and their roles
+  - name: auth
+    description: Authorize and authenticate users with JWT
+  - name: photoFiles
+    description: Manage photo files
+paths:
+  /auth/token:
+    post:
+      tags:
+        - auth
+      summary: Get user access token
+      operationId: authenticate
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/AuthRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /users:
+    get:
+      tags:
+        - users
+      summary: get all users
+      operationId: getUsers
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: size
+          in: query
+          schema:
+            type: integer
+          description: page size, default is 50
+        - name: fulltext
+          in: query
+          schema:
+            type: string
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [USER, ADMIN]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersPage'
+    post:
+      tags:
+        - users
+      summary: create a user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUserDTO'
+        '400':
+          description: Bad request
+        '409':
+          description: Email taken
+  /users/password:
+    post:
+      tags:
+        - users
+      summary: reset forgotten password
+      operationId: resetForgottenPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '202':
+          description: Accepted
+    put:
+      tags:
+        - users
+      summary: confirm password reset
+      operationId: confirmPasswordReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationToken'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad request
+  /users/{userId}/password:
+    put:
+      tags:
+        - users
+      summary: change user's password
+      operationId: changeUsersPassword
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUserDTO'
+        '400':
+          description: Bad request
+  /users/{userId}/role:
+    put:
+      tags:
+        - users
+      summary: change user's role
+      operationId: updateUserRole
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRoleRequest'
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUserDTO'
+        '400':
+          description: Bad request
+  /users/verification:
+    put:
+      tags:
+        - users
+      summary: verify user's account
+      operationId: verifyUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationToken'
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUserDTO'
+        '400':
+          description: Bad request
+  /photo-files:
+    get:
+      tags:
+        - photoFiles
+      summary: Get all photo files
+      operationId: getAllPhotoFiles
+      parameters:
+        - name: ownerId
+          in: query
+          schema:
+            type: string
+          description: id of the owner
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotosPage'
+    post:
+      tags:
+        - photoFiles
+      summary: Create a new photo file
+      operationId: createPhotoFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePhotoFileRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoFileDTO'
+        '400':
+          description: Bad request
+
+components:
+  schemas:
+    VerificationToken:
+      properties:
+        token:
+          type: string
+    ResetPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+    ChangePasswordRequest:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
+    PhotosPage:
+      type: object
+      properties:
+        number:
+          type: integer
+        size:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoFileDTO'
+    UsersPage:
+      type: object
+      properties:
+        number:
+          type: integer
+        size:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppUserDTO'
+    CreateUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        password:
+          type: string
+        hasDailyDiscount:
+          type: boolean
+    UpdateUserRoleRequest:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [USER, ADMIN]
+    AuthenticationResponse:
+      type:
+        object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/AppUserDTO'
+    PhotoFileDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        owner:
+          $ref: '#/components/schemas/AppUserDTO'
+        thumbnail:
+          type: string
+          format: byte
+    CreatePhotoFileRequest:
+      type: object
+      properties:
+        thumbnail:
+          type: string
+          format: byte
+    AppUserDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        enabled:
+          type: boolean
+        locked:
+          type: boolean
+        hasDailyDiscount:
+          type: boolean
+        balance:
+          type: integer
+        role:
+          type: string
+          enum: [USER, ADMIN]
+    AuthRequest:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - password
+            - refresh_token
+        username:
+          type: string
+        password:
+          type: string
+        refresh_token:
+          type: string

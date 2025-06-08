@@ -1,0 +1,3 @@
+INSERT INTO app_user (enabled, locked, balance, email, first_name, last_name, password, role, id, has_daily_discount) VALUES (true, false, 10000, 'user1@gmail.com', 'John', 'Doe', '$2a$10$cUnuchdx2SVunhJt93xZ..GtkjWwpm8/NhwHrRhWJ/Oxdw2f.zKfO', 'USER', 'fa75760d-a458-40af-bb92-5b22cf179d8f', true) ON CONFLICT DO NOTHING;
+
+INSERT INTO app_user (enabled, locked, balance, email, first_name, last_name, password, role, id, has_daily_discount) VALUES (true, false, 10000, 'user2@gmail.com', 'Donn', 'Joe', '$2a$10$cUnuchdx2SVunhJt93xZ..GtkjWwpm8/NhwHrRhWJ/Oxdw2f.zKfO', 'USER', 'fa75760d-a458-40af-bb92-5b22cf179d8f', true) ON CONFLICT DO NOTHING;
