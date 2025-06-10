@@ -45,7 +45,7 @@ jobs:
         with:
           name: java-app
       - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v4
+        uses: azure/webapps-deploy@v2
         with:
           with:
           app-name: 'pa200-hw02-backend'
