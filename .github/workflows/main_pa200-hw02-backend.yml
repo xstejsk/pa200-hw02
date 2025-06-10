@@ -1,53 +1,54 @@
-name: Build and deploy JAR app to Azure Web App - pa200-hw02-backend
+name: Build and deploy JAR app to Azure Web App – pa200-hw02-backend
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     defaults:
       run:
-        working-directory: "sports-reservation-system-backend"
+        working-directory: sports-reservation-system-backend
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out source
+        uses: actions/checkout@v4
 
-      - name: Set up Java version
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
+          distribution: microsoft
           java-version: '17'
-          distribution: 'microsoft'
 
-      - name: Grant execute permission for Gradle wrapper
+      - name: Make Gradle wrapper executable
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
 
-      - name: Upload artifact for deployment job
+      - name: Upload build artifact (all JARs in libs/)
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/sports-reservation-system-backend/build/libs/sports-reservation-system-backend*.jar'
+          path: sports-reservation-system-backend/build/libs
+          if-no-files-found: error
 
   deploy:
-    runs-on: windows-latest
     needs: build
+    runs-on: ubuntu-latest
     steps:
-      - name: Download Artifact from build job
+      - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: java-app
+
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
-          with:
-          app-name: 'pa200-hw02-backend'
-          package: 'java-app/*.jar'
+          app-name: pa200-hw02-backend
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: 'java-app/*.jar'    
