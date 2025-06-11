@@ -60,7 +60,8 @@ jobs:
           tree -a # tree is pre-installed on Ubuntu runners
           echo
           echo "=== Found FILES ==="
-          find . -type d -name "dist"
+          pwd
+          ls
 
       - name: Deploy React app to Blob Storage
         uses: azure/cli@v2
