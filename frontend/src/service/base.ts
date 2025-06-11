@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.BACKEND_URL || "http://localhost:8080",
+  baseURL: import.meta.env.VITE_BACKEND_URL || "http://pa200-hw02-backend-acbkcag9hzeec5hx.polandcentral-01.azurewebsites.net",
 });
 
 axiosInstance.interceptors.request.use(function (config) {
