@@ -22,7 +22,13 @@ const RegisterForm = () => {
     formState: { errors },
   } = useForm<NewUser>({
     resolver: zodResolver(newUserSchema),
+    defaultValues: {
+      hasDailyDiscount: false,
+    },
   });
+
+
+  console.log(errors)
 
   const onSubmit = (data: NewUser) => {
     usersApi

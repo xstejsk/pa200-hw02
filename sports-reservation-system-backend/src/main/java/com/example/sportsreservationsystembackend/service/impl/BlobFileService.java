@@ -41,11 +41,8 @@ public class BlobFileService {
     @Value("${azure.storage.container-name}")
     private String azureStorageContainerName;
 
-    @Value("${azure.storage.user-assigned-client-id}")
-    private String userAssignedClientId;
-
     private BlobContainerClient getBlobContainerClient() {
-        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().managedIdentityClientId(userAssignedClientId).build();
+        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
 
         BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
             .endpoint(azureStorageUrl)
