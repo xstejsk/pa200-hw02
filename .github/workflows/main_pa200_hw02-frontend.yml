@@ -60,7 +60,6 @@ jobs:
 
       - name: List all files
         run: |
-          mkdir dist && cd dist
           echo "=== Directory tree ==="
           tree -a # tree is pre-installed on Ubuntu runners
           echo
