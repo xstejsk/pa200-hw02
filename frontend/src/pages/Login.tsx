@@ -34,7 +34,7 @@ export default function Login() {
       >
         <div>
           <Typography level="h4" component="h1">
-            <b>Vítejte!</b>
+            <b>Vítejte!!</b>
           </Typography>
           <Typography level="body-sm">Pro pokračování se přihlašte.</Typography>
         </div>
