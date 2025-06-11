@@ -54,17 +54,16 @@ jobs:
         with:
           name: frontend-app
 
-      - name: Upload to Azure Blob Storage
+      - name: Deploy React app to Blob Storage
         uses: azure/cli@v2
         with:
           azcliversion: latest
-
-      - name: Deploy React app to Blob Storage
-        run: |
-          az storage blob upload-batch \
+          inlineScript: |
+            az storage blob upload-batch \
             --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
             --auth-mode key \
             --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
             --destination $AZURE_STORAGE_CONTAINER \
             --source frontend-app \
             --overwrite
+          
