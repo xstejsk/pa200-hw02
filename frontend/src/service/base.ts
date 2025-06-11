@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const axiosInstance = axios.create({
-  baseURL: "http://pa200-hw02-backend-acbkcag9hzeec5hx.polandcentral-01.azurewebsites.net",
+  baseURL: "https://pa200-hw02-backend-acbkcag9hzeec5hx.polandcentral-01.azurewebsites.net",
 });
 
 axiosInstance.interceptors.request.use(function (config) {
