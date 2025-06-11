@@ -15,6 +15,7 @@ azure:
   storage:
     url: https://pa200storagextejsk.blob.core.windows.net
     container-name: hw02
+    user-assigned-client-id: "ad561af2-4f64-407e-9efc-e2df0283826d"
 
 spring:
   application:
