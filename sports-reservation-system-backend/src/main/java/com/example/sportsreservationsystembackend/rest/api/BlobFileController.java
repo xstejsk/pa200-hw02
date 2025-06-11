@@ -33,7 +33,7 @@ public class BlobFileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         try {
-            BlobFile uploadedPhoto = bloblFileService.uploadPhoto(file, currentUser);
+            bloblFileService.uploadPhoto(file, currentUser);
             return ResponseEntity.status(HttpStatus.OK).body("ok");
         } catch (FileExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
