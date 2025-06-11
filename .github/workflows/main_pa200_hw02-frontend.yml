@@ -1,0 +1,70 @@
+name: Build and deploy React app to Azure Blob Storage
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+
+env:
+  BACKEND_URL: pa200-hw02-backend-acbkcag9hzeec5hx.polandcentral-01.azurewebsites.net
+  AZURE_STORAGE_CONTAINER: $web
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Set backend API URL dynamically
+        run: |
+          echo "REACT_APP_API_URL=$BACKEND_URL" >> .env
+
+      - name: Build the React app
+        run: npm run build
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-app
+          path: frontend/build
+          if-no-files-found: error
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-app
+
+      - name: Upload to Azure Blob Storage
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+
+      - name: Deploy React app to Blob Storage
+        run: |
+          az storage blob upload-batch \
+            --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+            --auth-mode key \
+            --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+            --destination $AZURE_STORAGE_CONTAINER \
+            --source frontend-app \
+            --overwrite
