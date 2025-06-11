@@ -54,6 +54,14 @@ jobs:
         with:
           name: frontend-app
 
+      - name: List all files
+        run: |
+          echo "=== Directory tree ==="
+          tree -a # tree is pre-installed on Ubuntu runners
+          echo
+          echo "=== Found FILES ==="
+          find . -type d -name "dist"
+
       - name: Deploy React app to Blob Storage
         uses: azure/cli@v2
         with:
@@ -64,6 +72,6 @@ jobs:
             --auth-mode key \
             --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
             --destination $AZURE_STORAGE_CONTAINER \
-            --source frontend-app \
+            --source dist \
             --overwrite
           
