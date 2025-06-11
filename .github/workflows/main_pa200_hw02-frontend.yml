@@ -33,7 +33,7 @@ jobs:
 
       - name: Set backend API URL dynamically
         run: |
-          echo "REACT_APP_API_URL=$BACKEND_URL" >> .env
+          echo "VITE_API_URL=$BACKEND_URL" >> .env
 
       - name: Build the React app
         run: npm run build
@@ -49,23 +49,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Create dist folder
-        run: |
-          mkdir dist && cd dist
-
       - name: Download frontend artifact
         uses: actions/download-artifact@v4
         with:
           name: frontend-app
-
-      - name: List all files
-        run: |
-          echo "=== Directory tree ==="
-          tree -a # tree is pre-installed on Ubuntu runners
-          echo
-          echo "=== Found FILES ==="
-          pwd
-          ls
 
       - name: Deploy React app to Blob Storage
         uses: azure/cli@v2
@@ -77,6 +64,6 @@ jobs:
             --auth-mode key \
             --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
             --destination $AZURE_STORAGE_CONTAINER \
-            --source dist \
+            --source . \
             --overwrite
           
