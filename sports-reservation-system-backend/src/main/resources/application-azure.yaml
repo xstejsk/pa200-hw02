@@ -16,6 +16,8 @@ spring:
     password: ${DB_PASSWORD}
     url: ${DB_URL}
     username: ${DB_USERNAME}
+    azure:
+      credential-free-enable: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -30,6 +32,7 @@ spring:
   security:
     filter:
       order: 10
+
 
   mail:
     host: ${SMTP_HOST}
